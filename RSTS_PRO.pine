@@ -1,0 +1,33 @@
+//@version=5
+indicator("RSTS PRO v1.0", overlay=true, max_labels_count=500, max_lines_count=500, max_labels_count=500)
+
+//=========================================================
+// RSTS PRO
+// Rohit Swing Trading System
+//
+// Author  : Rohit Jain + ChatGPT
+// Version : 1.0.0
+//
+// Description:
+//
+// Professional Swing Trading Indicator
+// for Indian Stock Market.
+//
+// Features
+// --------
+// ✓ EMA Trend Engine
+// ✓ Weekly Trend Filter
+// ✓ Supertrend
+// ✓ RSI
+// ✓ MACD
+// ✓ ADX
+// ✓ Relative Volume
+// ✓ Darvas Box
+// ✓ Breakout Engine
+// ✓ Smart Stop Loss
+// ✓ Dynamic Targets
+// ✓ Trade Score
+// ✓ Dashboard
+// ✓ Alerts
+//
+//=========================================================
