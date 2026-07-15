@@ -1,0 +1,106 @@
+//@version=5
+indicator("RSTS PRO v1.0", overlay = true, max_lines_count = 500, max_labels_count = 500)
+
+//====================================================
+// INPUTS
+//====================================================
+
+// EMA
+groupEMA = "EMA"
+
+ema20Length = input.int(20, "EMA 20", group = groupEMA)
+ema50Length = input.int(50, "EMA 50", group = groupEMA)
+ema200Length = input.int(200, "EMA 200", group = groupEMA)
+
+// Weekly Trend
+groupWeekly = "Weekly Trend"
+
+useWeeklyFilter = input.bool(true, "Enable Weekly Filter", group = groupWeekly)
+
+// Supertrend
+groupST = "SuperTrend"
+
+stFactor = input.float(3.0, "Factor", step = 0.1, group = groupST)
+stATR = input.int(10, "ATR", group = groupST)
+
+//====================================================
+// EMA
+//====================================================
+
+ema20 = ta.ema(close, ema20Length)
+ema50 = ta.ema(close, ema50Length)
+ema200 = ta.ema(close, ema200Length)
+
+plot(ema20, color=color.yellow, linewidth=2, title="EMA20")
+plot(ema50, color=color.blue, linewidth=2, title="EMA50")
+plot(ema200, color=color.red, linewidth=2, title="EMA200")
+
+//====================================================
+// WEEKLY EMA
+//====================================================
+
+weeklyEMA20 =
+    request.security(
+        syminfo.tickerid,
+        "W",
+        ta.ema(close,20),
+        barmerge.gaps_off,
+        barmerge.lookahead_off)
+
+weeklyEMA50 =
+    request.security(
+        syminfo.tickerid,
+        "W",
+        ta.ema(close,50),
+        barmerge.gaps_off,
+        barmerge.lookahead_off)
+
+weeklyBull =
+    weeklyEMA20 > weeklyEMA50
+
+//====================================================
+// SUPERTREND
+//====================================================
+
+[supertrend, direction] =
+    ta.supertrend(
+        stFactor,
+        stATR)
+
+plot(
+     supertrend,
+     color = direction > 0 ? color.green : color.red,
+     linewidth = 2,
+     title = "Supertrend")
+
+//====================================================
+// TREND ENGINE
+//====================================================
+
+emaBull =
+    ema20 > ema50 and
+    ema50 > ema200
+
+emaBear =
+    ema20 < ema50 and
+    ema50 < ema200
+
+trendBull =
+    emaBull and
+    direction > 0 and
+    (not useWeeklyFilter or weeklyBull)
+
+trendBear =
+    emaBear and
+    direction < 0
+
+//====================================================
+// BACKGROUND
+//====================================================
+
+bgcolor(
+ trendBull ?
+ color.new(color.green,92) :
+ trendBear ?
+ color.new(color.red,92) :
+ na)
